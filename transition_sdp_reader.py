@@ -161,7 +161,7 @@ class Graph(object):
                "arc_indices": arc_indices,
                "arc_tags": arc_tags,
                "meta_info": self.meta_info,
-               "pos_tag": pos_tags,
+               "pos_tags": pos_tags,
                "token_characters": token_characters
                }
 
@@ -230,7 +230,7 @@ class SDPDatasetReader(DatasetReader):
         """
         重载read方法，这个函数从文本文件中获取样本数据，然后将样本数据转换成封装好的实例
         :param file_path:数据文件路径
-        :return:一个样本的实例（instance），包含tokens, arc_indices, arc_tags, gold_actions, meta_info, pos_tag六个域（field）
+        :return:一个样本的实例（instance），包含tokens, arc_tags, gold_actions, meta_info, token_characters五个域（field）
         """
         # 可以读取需要下载的网络地址
         file_path = cached_path(file_path)
@@ -244,6 +244,7 @@ class SDPDatasetReader(DatasetReader):
                 tokens = ret["tokens"]
                 arc_indices = ret["arc_indices"]
                 arc_tags = ret["arc_tags"]
+                pos_tags = ret["pos_tags"]
                 token_characters = ret["token_characters"]
                 meta_info = ret["meta_info"]
 
@@ -254,7 +255,7 @@ class SDPDatasetReader(DatasetReader):
                     print('-E-')
 
                 # 使用yield产生生成器
-                yield self.text_to_instance(tokens, arc_indices, arc_tags, token_characters, gold_actions, meta_info)
+                yield self.text_to_instance(tokens, arc_indices, arc_tags, token_characters, gold_actions, meta_info, pos_tags)
 
     @overrides
     def text_to_instance(self,  # type: ignore
@@ -263,9 +264,11 @@ class SDPDatasetReader(DatasetReader):
                          arc_tags: List[str] = None,
                          token_characters: List[List[str]] = None,
                          gold_actions: List[str] = None,
-                         meta_info: List = None) -> Instance:
+                         meta_info: List = None,
+                         pos_tags: List[str] = None) -> Instance:
         """
         文本转实例
+        :param pos_tags: 词性列表
         :param tokens:token列表
         :param arc_indices:依存弧头尾节点索引列表
         :param arc_tags:依存弧标签列表
@@ -298,10 +301,14 @@ class SDPDatasetReader(DatasetReader):
             meta_dict["token_characters"] = [TextField([Token(c) for c in chars], self._characters_indexers) for chars in token_characters]
             fields["token_characters"] = ListField([TextField([Token(c) for c in chars], self._characters_indexers) for chars in token_characters])
 
-        # CoNLL格式元数据域
+        # CoNLL格式元数据
         if meta_info is not None:
             # meta_dict["meta_info"] = meta_info[0]
             meta_dict["meta_info"] = meta_info
+
+        # 词性
+        if pos_tags is not None:
+            meta_dict["pos_tags"] = pos_tags
 
         # 元数据域
         fields["metadata"] = MetadataField(meta_dict)

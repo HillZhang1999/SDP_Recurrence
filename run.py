@@ -1,4 +1,6 @@
 import os
+import time
+
 os.environ["CUDA_VISIBLE_DEVICES"] = '4'
 
 import tempfile
@@ -81,17 +83,19 @@ def build_vocab(instances: Iterable[Instance]) -> Vocabulary:
 def build_model(vocab: Vocabulary) -> Model:
 
     vocab_size = vocab.get_vocab_size("tokens")
+    char_vocab_size = vocab.get_vocab_size("token_characters")
     text_field_embedder = BasicTextFieldEmbedder(
         {"tokens": Embedding(embedding_dim=100, num_embeddings=vocab_size)})
-    char_field_embedder = TokenCharactersEncoder(Embedding(embedding_dim=100, num_embeddings=vocab.get_vocab_size("chars")), BagOfEmbeddingsEncoder(100, True), 0.33)
-    metric = MyMetric()       # TODO 存疑
+    char_field_embedder = BasicTextFieldEmbedder(
+        {"token_characters": TokenCharactersEncoder(Embedding(embedding_dim=100, num_embeddings=char_vocab_size), BagOfEmbeddingsEncoder(100, True), 0.33)})
+
+    metric = MyMetric()
     action_embedding = Embedding(vocab_namespace='actions', embedding_dim=50, num_embeddings=vocab.get_vocab_size('actions'))
 
-    # TODO 这里应该还缺控制器，但是我还不清楚，在调试过程中慢慢添加
     return TransitionParser(vocab=vocab, 
                             text_field_embedder=text_field_embedder,
                             char_field_embedder=char_field_embedder,
-                            word_dim=100,
+                            word_dim=200,
                             hidden_dim=200,
                             action_dim=50,
                             num_layers=2,
@@ -101,6 +105,7 @@ def build_model(vocab: Vocabulary) -> Model:
                             same_dropout_mask_per_instance=True,
                             input_dropout=0.2,
                             action_embedding=action_embedding,
+                            filename="./results/result_{}.txt".format(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))
                             )
 
 def build_data_loaders(
@@ -123,10 +128,6 @@ def run_training_loop():
     dev_set.index_with(vocab)
 
     train_loader, dev_loader = build_data_loaders(train_set, dev_set)
-
-    # # TODO 这里的字典格式非常冗杂，为什么会有3个嵌套的字典，在代码上进行修改的复杂程度还是未知数，看看模型部分怎么调用的。
-    # temp = next(iter(train_loader))
-    # print(next(iter(train_loader)))
 
     with tempfile.TemporaryDirectory() as serialization_dir:
         trainer = build_trainer(

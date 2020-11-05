@@ -7,8 +7,7 @@ from allennlp.models.model import Model
 from allennlp.modules import Seq2SeqEncoder, TextFieldEmbedder, Embedding
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from torch.nn.modules import Dropout
-
-from allennlp.modules.token_embedders import TokenCharactersEncoder
+from transition_sdp_predictor import sdp_trans_outputs_into_conll
 
 from transition_sdp_metric import MyMetric
 from stack_rnn import StackRnn
@@ -23,7 +22,7 @@ class TransitionParser(Model):
     def __init__(self,
                  vocab: Vocabulary,
                  text_field_embedder: TextFieldEmbedder,
-                 char_field_embedder: TokenCharactersEncoder,
+                 char_field_embedder: TextFieldEmbedder,
                  word_dim: int,
                  hidden_dim: int,
                  action_dim: int,
@@ -35,7 +34,8 @@ class TransitionParser(Model):
                  input_dropout: float = 0.0,
                  action_embedding: Embedding = None,
                  initializer: InitializerApplicator = InitializerApplicator(),
-                 regularizer: Optional[RegularizerApplicator] = None
+                 regularizer: Optional[RegularizerApplicator] = None,
+                 filename: str = None,
                  ) -> None:
         """
         模型构造类
@@ -53,6 +53,7 @@ class TransitionParser(Model):
         :param action_embedding:动作序列嵌入器（封装了Pytorch的embedding类）
         :param initializer:参数初始化器
         :param regularizer:正则化器
+        :param filename:预测结果输出文件名
         """
         super(TransitionParser, self).__init__(vocab, regularizer)
 
@@ -68,6 +69,7 @@ class TransitionParser(Model):
         self.text_field_embedder = text_field_embedder
         self.token_characters_encoder = char_field_embedder
         self.metric = metric
+        self.filename = filename
 
         # 动作序列嵌入器（封装了Pytorch的embedding类）
         self.action_embedding = action_embedding
@@ -305,11 +307,13 @@ class TransitionParser(Model):
         tokens['tokens']['tokens'] = tokens['tokens']['tokens'][:, 1:]
         sent_len = [len(d['tokens'])-1 for d in metadata]
         meta_info = [d['meta_info'] for d in metadata]
+        pos_tags = [d['pos_tags'] for d in metadata]
+
         token_characters["token_characters"]["token_characters"] = token_characters["token_characters"]["token_characters"][:, 1:]
         token_characters["token_characters"]["token_characters"] = token_characters["token_characters"]["token_characters"].squeeze(3)
+        
         oracle_actions = None
-        # print(token_characters)
-        self.token_characters_encoder(token_characters["token_characters"]["token_characters"])
+        token_characters = self.token_characters_encoder(token_characters)
 
         if gold_actions is not None:
             oracle_actions = [d['gold_actions'] for d in metadata]
@@ -317,10 +321,11 @@ class TransitionParser(Model):
 
         # 句子中各tokens的嵌入表示
         embedded_text_input = self.text_field_embedder(tokens)
-        embedded_text_input = self._input_dropout(embedded_text_input)
+        embedded_text_input = torch.cat((embedded_text_input, token_characters), dim=-1)
 
         # 训练模式
         if self.training:
+            embedded_text_input = self._input_dropout(embedded_text_input)
             ret_train = self._greedy_decode(batch_size=batch_size,
                                             sent_len=sent_len,
                                             embedded_text_input=embedded_text_input,
@@ -349,11 +354,31 @@ class TransitionParser(Model):
             'tokens': [d['tokens'] for d in metadata],
             'edge_list': edge_list,
             'meta_info': meta_info,
+            'pos_tags': pos_tags,
             'loss': _loss
         }
 
         # 评价模型
         self.metric(edge_list, metadata, None)
+
+        # CoNLL格式化的结果
+        predicted_conlls = []
+
+        for sent_idx in range(batch_size):
+            if len(output_dict['edge_list'][sent_idx]) <= 5 * len(output_dict['tokens'][sent_idx]):
+                predicted_conlls.append(sdp_trans_outputs_into_conll({
+                    'tokens': output_dict['tokens'][sent_idx],
+                    'edge_list': output_dict['edge_list'][sent_idx],
+                    'pos_tags': output_dict['pos_tags'][sent_idx],
+                }))
+
+        with open(self.filename, "a+", encoding="utf-8") as out:
+            for r in predicted_conlls:
+                if r:
+                    for line in r:
+                        out.write(line)
+                    out.write("\n")
+                    out.flush()
 
         return output_dict
 
