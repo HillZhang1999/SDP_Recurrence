@@ -3,13 +3,13 @@ os.environ["CUDA_VISIBLE_DEVICES"] = '4'
 
 import tempfile
 from typing import Dict, Iterable, List, Tuple
-
+from allennlp.modules.token_embedders import TokenCharactersEncoder
 import torch
 from torch.utils.data import DataLoader
 
 import allennlp
 from allennlp.data import allennlp_collate
-# from allennlp.common import JsonDict
+# from allennlp.common import JsonDictm
 from allennlp.data import DatasetReader, Instance
 from allennlp.data import Vocabulary
 # from allennlp.data.fields import LabelField, TextField
@@ -17,19 +17,19 @@ from allennlp.data import Vocabulary
 from allennlp.models import Model
 from allennlp.modules import TextFieldEmbedder, Seq2VecEncoder, Embedding, Seq2SeqEncoder
 from allennlp.modules.text_field_embedders import BasicTextFieldEmbedder
-from allennlp.modules.seq2vec_encoders import StackedAlternatingLstmSeq2VecEncoder
+from allennlp.modules.seq2vec_encoders import StackedAlternatingLstmSeq2VecEncoder, BagOfEmbeddingsEncoder
 # from allennlp.nn import util
 # from allennlp.training.metrics import CategoricalAccuracy
 from allennlp.training.trainer import Trainer, GradientDescentTrainer
 from allennlp.training.optimizers import AdamOptimizer
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer, TokenCharactersIndexer
-from allennlp.training.metrics import Metric
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
 
 from config import config
 
 from transition_sdp_reader import SDPDatasetReader
 from transition_parser_sdp import TransitionParser
+from transition_sdp_metric import MyMetric
 
 def build_trainer(
     model: Model,
@@ -69,9 +69,11 @@ def build_dataset_reader() -> DatasetReader:
     action_indexers = {'actions': SingleIdTokenIndexer(namespace='actions')}
     arc_tag_indexers = {'arc_tags': SingleIdTokenIndexer(namespace='arc_tags')}
 
-    return SDPDatasetReader(token_indexers = token_indexers,
-                            action_indexers = action_indexers,
-                            arc_tag_indexers = arc_tag_indexers)
+    return SDPDatasetReader(token_indexers=token_indexers,
+                            action_indexers=action_indexers,
+                            arc_tag_indexers=arc_tag_indexers,
+                            characters_indexers=characters_indexers
+                            )
 
 def build_vocab(instances: Iterable[Instance]) -> Vocabulary:
     return Vocabulary.from_instances(instances)
@@ -81,37 +83,25 @@ def build_model(vocab: Vocabulary) -> Model:
     vocab_size = vocab.get_vocab_size("tokens")
     text_field_embedder = BasicTextFieldEmbedder(
         {"tokens": Embedding(embedding_dim=100, num_embeddings=vocab_size)})
-    encoder = StackedAlternatingLstmSeq2VecEncoder(input_size=100, 
-                            hidden_size=400, 
-                            num_layers=1, 
-                            recurrent_dropout_probability=0.33,
-                            use_highway=True)
-    pos_tagger_encoder = StackedAlternatingLstmSeq2VecEncoder(input_size=200, 
-                                        hidden_size=300, 
-                                        num_layers=2, 
-                                        recurrent_dropout_probability=0.33,
-                                        use_highway=True)
-    metric = Metric()       # TODO 存疑
+    char_field_embedder = TokenCharactersEncoder(Embedding(embedding_dim=100, num_embeddings=vocab.get_vocab_size("chars")), BagOfEmbeddingsEncoder(100, True), 0.33)
+    metric = MyMetric()       # TODO 存疑
     action_embedding = Embedding(vocab_namespace='actions', embedding_dim=50, num_embeddings=vocab.get_vocab_size('actions'))
 
     # TODO 这里应该还缺控制器，但是我还不清楚，在调试过程中慢慢添加
     return TransitionParser(vocab=vocab, 
-                            text_field_embedder=text_field_embedder, 
-                            word_dim=200,
+                            text_field_embedder=text_field_embedder,
+                            char_field_embedder=char_field_embedder,
+                            word_dim=100,
                             hidden_dim=200,
                             action_dim=50,
                             num_layers=2,
-                            mces_metric=metric,
+                            metric=metric,
                             recurrent_dropout_probability=0.2,
                             layer_dropout_probability=0.2,
                             same_dropout_mask_per_instance=True,
                             input_dropout=0.2,
-                            #  pos_tag_embedding=,
                             action_embedding=action_embedding,
-                            pos_tagger_encoder=pos_tagger_encoder
-                            #  initializer=,
-                            #  regularizer=
-                            ).to('cuda')
+                            )
 
 def build_data_loaders(
     train_data: torch.utils.data.Dataset,
@@ -134,8 +124,9 @@ def run_training_loop():
 
     train_loader, dev_loader = build_data_loaders(train_set, dev_set)
 
-    # TODO 这里的字典格式非常冗杂，为什么会有3个嵌套的字典，在代码上进行修改的复杂程度还是未知数，看看模型部分怎么调用的。
-    # print(next(iter(train_loader))['tokens']['tokens']['tokens'])
+    # # TODO 这里的字典格式非常冗杂，为什么会有3个嵌套的字典，在代码上进行修改的复杂程度还是未知数，看看模型部分怎么调用的。
+    # temp = next(iter(train_loader))
+    # print(next(iter(train_loader)))
 
     with tempfile.TemporaryDirectory() as serialization_dir:
         trainer = build_trainer(
@@ -146,11 +137,8 @@ def run_training_loop():
         )
         trainer.train()
 
-    return model, dataset_reader
+    return model, reader
 
 model, dataset_reader = run_training_loop()
 vocab = model.vocab
 
-print()
-
-# from allennlp.commands.train import train_model_from_file
