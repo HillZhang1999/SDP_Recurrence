@@ -37,7 +37,7 @@ class MyMetric(Metric):
                 try: 
                     k = golds[i]['arc_indices'].index(arc[:2])
                     self.correct_arcs += 1
-                    if golds[i]['arc_tags'][k] == arc[2]:
+                    if golds[i]['arc_tag'][k] == arc[2]:
                         self.correct_rels += 1
                 except ValueError:
                     pass

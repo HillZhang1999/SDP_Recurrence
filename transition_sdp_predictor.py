@@ -13,6 +13,7 @@ class SDPParserPredictor(Predictor):
     """
     预测器模型
     """
+
     def predict(self, sentence: str) -> JsonDict:
         """
         根据CoNLL格式的句子数据，去预测该句子的语义依存图（SDG）。
@@ -78,9 +79,12 @@ def sdp_trans_outputs_into_conll(outputs):
     edge_list = outputs["edge_list"]
     edge_list.sort(key=lambda x: x[0])
     tokens = outputs["tokens"]
-    pos_tags = outputs["pos_tags"]
+    pos_tag = outputs["pos_tag"]
 
     conll_result = []
     for edge in edge_list:
-        conll_result.append("{:d}\t{:s}\t{:s}\t{:s}\t{:s}\t_\t{:d}\t{:s}\t_\t_\n".format(edge[0], tokens[edge[0]], tokens[edge[0]], pos_tags[edge[0]],  pos_tags[edge[0]], edge[1], edge[2]))
+        conll_result.append(
+            "{:d}\t{:s}\t{:s}\t{:s}\t{:s}\t_\t{:d}\t{:s}\t_\t_\n".format(edge[0], tokens[edge[0]], tokens[edge[0]],
+                                                                         pos_tag[edge[0]], pos_tag[edge[0]], edge[1],
+                                                                         edge[2]))
     return conll_result

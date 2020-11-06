@@ -145,23 +145,23 @@ class Graph(object):
         获取当前句子的依存弧信息
         :return:一个字典，包含：token列表，词性列表，依存弧头尾节点索引列表，依存弧标签列表，CoNLL格式元数据，节点标签列表，依存弧列表, 字信息列表。
         """
-        tokens, pos_tags, arc_indices, arc_tags, token_characters = [], [], [], [], []
+        tokens, pos_tag, arc_indices, arc_tag, token_characters = [], [], [], [], []
 
         # 抽取信息
         for node_id in range(self.node_num):
             node = self.nodes[node_id]
             tokens.append(node.label)
             token_characters.append([ch for ch in node.label])
-            pos_tags.append(node.pos_tag)
+            pos_tag.append(node.pos_tag)
             for child in node.childs:
                 arc_indices.append((child.node, node.id))  # tuple:(弧尾节点id,弧头节点id)
-                arc_tags.append(child.rel)
+                arc_tag.append(child.rel)
 
         ret = {"tokens": tokens,
                "arc_indices": arc_indices,
-               "arc_tags": arc_tags,
+               "arc_tag": arc_tag,
                "meta_info": self.meta_info,
-               "pos_tags": pos_tags,
+               "pos_tag": pos_tag,
                "token_characters": token_characters
                }
 
@@ -201,6 +201,7 @@ class SDPDatasetReader(DatasetReader):
                  action_indexers: Dict[str, TokenIndexer] = None,
                  arc_tag_indexers: Dict[str, TokenIndexer] = None,
                  characters_indexers: Dict[str, TokenIndexer] = None,
+                 pos_tag_indexers: Dict[str, TokenIndexer] = None,
                  lazy: bool = False) -> None:
         """
         初始化SDPDatasetReader
@@ -208,6 +209,7 @@ class SDPDatasetReader(DatasetReader):
         :param action_indexers:转移动作编号器
         :param arc_tag_indexers:依存弧标签编号器
         :param characters_indexers:字标签编号器
+        :param pos_tag_indexers:词性标签编号器
         :param lazy:是否懒加载
         """
         super().__init__(lazy)
@@ -223,14 +225,16 @@ class SDPDatasetReader(DatasetReader):
         self._characters_tag_indexers = None
         if characters_indexers is not None and len(characters_indexers) > 0:
             self._characters_indexers = characters_indexers
-        self._char_list_indexers = {"char_lists": SingleIdTokenIndexer()}
+        self._pos_tag_indexers = None
+        if pos_tag_indexers is not None and len(pos_tag_indexers) > 0:
+            self._pos_tag_indexers = pos_tag_indexers
 
     @overrides
     def _read(self, file_path: str):
         """
         重载read方法，这个函数从文本文件中获取样本数据，然后将样本数据转换成封装好的实例
         :param file_path:数据文件路径
-        :return:一个样本的实例（instance），包含tokens, arc_tags, gold_actions, meta_info, token_characters五个域（field）
+        :return:一个样本的实例（instance），包含tokens, arc_tag, pos_tag, gold_actions, meta_info, token_characters六个域（field）
         """
         # 可以读取需要下载的网络地址
         file_path = cached_path(file_path)
@@ -243,35 +247,35 @@ class SDPDatasetReader(DatasetReader):
             for ret in lazy_parse(fp.read()):
                 tokens = ret["tokens"]
                 arc_indices = ret["arc_indices"]
-                arc_tags = ret["arc_tags"]
-                pos_tags = ret["pos_tags"]
+                arc_tag = ret["arc_tag"]
+                pos_tag = ret["pos_tag"]
                 token_characters = ret["token_characters"]
                 meta_info = ret["meta_info"]
 
                 # CoNLL文件中不包含转移系统生成每个句子的语义依存图的正确转移序列，需要额外编写函数进行转移序列的解码（Root节点不需要传入）
-                gold_actions = get_oracle_actions(tokens, arc_indices, arc_tags) if arc_indices else None
+                gold_actions = get_oracle_actions(tokens, arc_indices, arc_tag) if arc_indices else None
 
                 if gold_actions and gold_actions[-1] == '-E-':
                     print('-E-')
 
                 # 使用yield产生生成器
-                yield self.text_to_instance(tokens, arc_indices, arc_tags, token_characters, gold_actions, meta_info, pos_tags)
+                yield self.text_to_instance(tokens, arc_indices, arc_tag, token_characters, gold_actions, meta_info, pos_tag)
 
     @overrides
     def text_to_instance(self,  # type: ignore
                          tokens: List[str],
                          arc_indices: List[Tuple[int, int]] = None,
-                         arc_tags: List[str] = None,
+                         arc_tag: List[str] = None,
                          token_characters: List[List[str]] = None,
                          gold_actions: List[str] = None,
                          meta_info: List = None,
-                         pos_tags: List[str] = None) -> Instance:
+                         pos_tag: List[str] = None) -> Instance:
         """
         文本转实例
-        :param pos_tags: 词性列表
+        :param pos_tag: 词性列表
         :param tokens:token列表
         :param arc_indices:依存弧头尾节点索引列表
-        :param arc_tags:依存弧标签列表
+        :param arc_tag:依存弧标签列表
         :param token_characters:字信息列表
         :param gold_actions:生成SDG所需要的正确转移序列
         :param meta_info:CoNLL格式元数据
@@ -286,10 +290,10 @@ class SDPDatasetReader(DatasetReader):
         meta_dict = {"tokens": tokens}
 
         # 依存弧头尾节点索引域
-        if arc_indices is not None and arc_tags is not None:
+        if arc_indices is not None and arc_tag is not None:
             meta_dict["arc_indices"] = arc_indices
-            meta_dict["arc_tags"] = arc_tags
-            fields["arc_tags"] = TextField([Token(a) for a in arc_tags], self._arc_tag_indexers)
+            meta_dict["arc_tag"] = arc_tag
+            fields["arc_tag"] = TextField([Token(a) for a in arc_tag], self._arc_tag_indexers)
 
         # 正确转移序列域
         if gold_actions is not None:
@@ -306,9 +310,10 @@ class SDPDatasetReader(DatasetReader):
             # meta_dict["meta_info"] = meta_info[0]
             meta_dict["meta_info"] = meta_info
 
-        # 词性
-        if pos_tags is not None:
-            meta_dict["pos_tags"] = pos_tags
+        # 词性标签域
+        if pos_tag is not None:
+            fields["pos_tag"] = TextField([Token(a) for a in pos_tag], self._pos_tag_indexers)
+            meta_dict["pos_tag"] = pos_tag
 
         # 元数据域
         fields["metadata"] = MetadataField(meta_dict)
@@ -317,12 +322,12 @@ class SDPDatasetReader(DatasetReader):
         return Instance(fields)
 
 
-def get_oracle_actions(annotated_sentence, directed_arc_indices, arc_tags):
+def get_oracle_actions(annotated_sentence, directed_arc_indices, arc_tag):
     """
     根据标注了SDG的句子，生成正确的转移序列。
     :param annotated_sentence:tokens列表
     :param directed_arc_indices:有向依存弧列表
-    :param arc_tags:依存弧标签列表
+    :param arc_tag:依存弧标签列表
     :return:转移动作序列
     """
     graph = {}
@@ -331,7 +336,7 @@ def get_oracle_actions(annotated_sentence, directed_arc_indices, arc_tags):
 
     # 构建字典形式存储的语义依存图
     # 字典的键值对含义为：(孩子节点:[(头节点_1，弧标签_1),(头节点_2，弧标签_2)...])
-    for arc, arc_tag in zip(directed_arc_indices, arc_tags):
+    for arc, arc_tag in zip(directed_arc_indices, arc_tag):
         graph[arc[0]].append((arc[1], arc_tag))
 
     # N为节点个数，其中包含一个根节点ROOT

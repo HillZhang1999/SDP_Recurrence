@@ -23,6 +23,7 @@ class TransitionParser(Model):
                  vocab: Vocabulary,
                  text_field_embedder: TextFieldEmbedder,
                  char_field_embedder: TextFieldEmbedder,
+                 pos_tag_field_embedder: TextFieldEmbedder,
                  word_dim: int,
                  hidden_dim: int,
                  action_dim: int,
@@ -39,8 +40,10 @@ class TransitionParser(Model):
                  ) -> None:
         """
         模型构造类
-        :param vocab:词典对象，包含padding后的所有tokens、pos_tags等内容及其索引
+        :param vocab:词典对象，包含padding后的所有tokens、pos_tag等内容及其索引
         :param text_field_embedder:文本域嵌入表示器
+        :param char_field_embedder:字符域嵌入表示器
+        :param pos_tag_field_embedder:词性域嵌入表示器
         :param word_dim:词向量嵌入维度
         :param hidden_dim:隐藏层维度
         :param action_dim:转移动作嵌入维度
@@ -57,17 +60,13 @@ class TransitionParser(Model):
         """
         super(TransitionParser, self).__init__(vocab, regularizer)
 
-        self._unlabeled_correct = 0
-        self._labeled_correct = 0
-        self._total_edges_predicted = 0
-        self._total_edges_actual = 0
-        self._exact_unlabeled_correct = 0
-        self._exact_labeled_correct = 0
-        self._total_sentences = 0
-
+        self.epoch = 1
+        self.best_UF = 0
+        self.vocab = vocab
         self.num_actions = vocab.get_vocab_size('actions')
         self.text_field_embedder = text_field_embedder
         self.token_characters_encoder = char_field_embedder
+        self.pos_tag_field_embedder = pos_tag_field_embedder
         self.metric = metric
         self.filename = filename
 
@@ -293,11 +292,14 @@ class TransitionParser(Model):
                 token_characters: Dict[str, torch.LongTensor],
                 metadata: List[Dict[str, Any]],
                 gold_actions: Dict[str, torch.LongTensor] = None,
-                arc_tags: torch.LongTensor = None
+                arc_tag: torch.LongTensor = None,
+                pos_tag: torch.LongTensor = None,
                 ) -> Dict[str, torch.LongTensor]:
         """
         前向传播函数
-        :param arc_tags: 依存弧标签列表
+        :param pos_tag: 词性列表
+        :param token_characters: 每个单词划分为字后的列表
+        :param arc_tag: 依存弧标签列表
         :param tokens: tokens列表
         :param metadata:元数据字典
         :param gold_actions:正确的转移序列
@@ -305,23 +307,23 @@ class TransitionParser(Model):
         """
         batch_size = len(metadata)
         tokens['tokens']['tokens'] = tokens['tokens']['tokens'][:, 1:]
+        pos_tag["pos_tag"]["tokens"] = pos_tag["pos_tag"]["tokens"][:, 1:]
         sent_len = [len(d['tokens'])-1 for d in metadata]
         meta_info = [d['meta_info'] for d in metadata]
-        pos_tags = [d['pos_tags'] for d in metadata]
 
-        token_characters["token_characters"]["token_characters"] = token_characters["token_characters"]["token_characters"][:, 1:]
-        token_characters["token_characters"]["token_characters"] = token_characters["token_characters"]["token_characters"].squeeze(3)
+        token_characters["token_characters"]["token_characters"] = token_characters["token_characters"]["token_characters"][:, 1:].squeeze(3)
         
         oracle_actions = None
         token_characters = self.token_characters_encoder(token_characters)
+        embedded_pos_tag = self.pos_tag_field_embedder(pos_tag)
 
         if gold_actions is not None:
             oracle_actions = [d['gold_actions'] for d in metadata]
             oracle_actions = [[self.vocab.get_token_index(s, namespace='actions') for s in l] for l in oracle_actions]
 
-        # 句子中各tokens的嵌入表示
+        # 句子中各tokens的嵌入表示：由词性向量（50维）、字向量（100维、giga语料）、词向量（100维、giga语料）得到
         embedded_text_input = self.text_field_embedder(tokens)
-        embedded_text_input = torch.cat((embedded_text_input, token_characters), dim=-1)
+        embedded_text_input = torch.cat((embedded_text_input, token_characters, embedded_pos_tag), dim=-1)
 
         # 训练模式
         if self.training:
@@ -350,11 +352,13 @@ class TransitionParser(Model):
         self.train(training_mode)
         edge_list = ret_eval['edge_list']
         _loss = ret_eval['loss']
+
+        pos_tag = [d['pos_tag'] for d in metadata]
         output_dict = {
             'tokens': [d['tokens'] for d in metadata],
             'edge_list': edge_list,
             'meta_info': meta_info,
-            'pos_tags': pos_tags,
+            'pos_tag': pos_tag,
             'loss': _loss
         }
 
@@ -369,7 +373,7 @@ class TransitionParser(Model):
                 predicted_conlls.append(sdp_trans_outputs_into_conll({
                     'tokens': output_dict['tokens'][sent_idx],
                     'edge_list': output_dict['edge_list'][sent_idx],
-                    'pos_tags': output_dict['pos_tags'][sent_idx],
+                    'pos_tag': output_dict['pos_tag'][sent_idx],
                 }))
 
         with open(self.filename, "a+", encoding="utf-8") as out:

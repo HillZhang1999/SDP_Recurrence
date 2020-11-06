@@ -1,0 +1,83 @@
+
+
+
+
+
+
+
+9	。	。	PU	PU	_	8	mPunc	_	_9	接管	接管	VV	VV	_	8	mPunc	_	_10	世界	世界	NN	NN	_	8	mPunc	_	_11	。	。	PU	PU	_	8	mPunc	_	_6	地基	地基	NN	NN	_	5	mPunc	_	_7	。	。	PU	PU	_	5	mPunc	_	_
+6	做出	做出	VV	VV	_	1	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_5	打	打	VV	VV	_	1	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	6	mPunc	_	_8	渐渐	渐渐	AD	AD	_	1	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_
+7	。	。	PU	PU	_	6	mPunc	_	_10	世界	世界	NN	NN	_	5	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_
+
+
+
+9	。	。	PU	PU	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_
+7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_
+9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_5	打	打	VV	VV	_	1	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_
+6	做出	做出	VV	VV	_	1	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_5	打	打	VV	VV	_	1	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_8	渐渐	渐渐	AD	AD	_	1	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_
+8	渐渐	渐渐	AD	AD	_	1	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_5	打	打	VV	VV	_	1	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_6	做出	做出	VV	VV	_	1	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_
+5	打	打	VV	VV	_	1	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_6	做出	做出	VV	VV	_	1	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_
+9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_
+7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_
+7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_
+9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_
+6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_
+6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	6	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_
+9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	6	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_
+6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	6	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_8	渐渐	渐渐	AD	AD	_	9	Mann	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_
+7	正	正	AD	AD	_	9	Mann	_	_8	渐渐	渐渐	AD	AD	_	9	Mann	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_1	盖	盖	NN	NN	_	6	Exp	_	_6	地基	地基	NN	NN	_	0	Root	_	_7	。	。	PU	PU	_	6	mPunc	_	_1	他	他	PN	PN	_	8	Exp	_	_5	罪犯	罪犯	NN	NN	_	8	Mann	_	_6	做出	做出	VV	VV	_	8	Mann	_	_7	了	了	AS	AS	_	8	Mann	_	_8	裁决	裁决	NN	NN	_	0	Root	_	_9	。	。	PU	PU	_	8	mPunc	_	_
+1	盖	盖	NN	NN	_	6	Exp	_	_5	打	打	VV	VV	_	6	Mann	_	_6	地基	地基	NN	NN	_	0	Root	_	_7	。	。	PU	PU	_	6	mPunc	_	_1	他	他	PN	PN	_	8	Exp	_	_5	罪犯	罪犯	NN	NN	_	8	Mann	_	_6	做出	做出	VV	VV	_	8	Mann	_	_7	了	了	AS	AS	_	8	Mann	_	_8	裁决	裁决	NN	NN	_	0	Root	_	_9	。	。	PU	PU	_	8	mPunc	_	_1	难怪	难怪	AD	AD	_	9	Exp	_	_5	电子	电子	NN	NN	_	9	Mann	_	_6	计算机	计算机	NN	NN	_	9	Mann	_	_7	正	正	AD	AD	_	9	Mann	_	_8	渐渐	渐渐	AD	AD	_	9	Mann	_	_9	接管	接管	VV	VV	_	0	Root	_	_10	世界	世界	NN	NN	_	9	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_
+1	盖	盖	NN	NN	_	6	Exp	_	_4	要	要	VV	VV	_	6	Mann	_	_5	打	打	VV	VV	_	6	Mann	_	_6	地基	地基	NN	NN	_	0	Root	_	_7	。	。	PU	PU	_	6	mPunc	_	_1	他	他	PN	PN	_	8	Exp	_	_4	个	个	M	M	_	8	Mann	_	_5	罪犯	罪犯	NN	NN	_	8	Mann	_	_6	做出	做出	VV	VV	_	8	Mann	_	_7	了	了	AS	AS	_	8	Mann	_	_8	裁决	裁决	NN	NN	_	0	Root	_	_9	。	。	PU	PU	_	8	mPunc	_	_1	难怪	难怪	AD	AD	_	9	Exp	_	_5	电子	电子	NN	NN	_	9	Mann	_	_6	计算机	计算机	NN	NN	_	9	Mann	_	_7	正	正	AD	AD	_	9	Mann	_	_8	渐渐	渐渐	AD	AD	_	9	Mann	_	_9	接管	接管	VV	VV	_	0	Root	_	_10	世界	世界	NN	NN	_	9	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_
+1	难怪	难怪	AD	AD	_	9	Exp	_	_5	电子	电子	NN	NN	_	9	Mann	_	_6	计算机	计算机	NN	NN	_	9	Mann	_	_7	正	正	AD	AD	_	9	Mann	_	_8	渐渐	渐渐	AD	AD	_	9	Mann	_	_9	接管	接管	VV	VV	_	0	Root	_	_10	世界	世界	NN	NN	_	9	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_1	盖	盖	NN	NN	_	6	Exp	_	_4	要	要	VV	VV	_	6	Mann	_	_5	打	打	VV	VV	_	6	Mann	_	_6	地基	地基	NN	NN	_	0	Root	_	_7	。	。	PU	PU	_	6	mPunc	_	_1	他	他	PN	PN	_	7	Exp	_	_5	罪犯	罪犯	NN	NN	_	7	Mann	_	_6	做出	做出	VV	VV	_	7	Mann	_	_7	了	了	AS	AS	_	0	Root	_	_8	裁决	裁决	NN	NN	_	7	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_
+1	他	他	PN	PN	_	7	Exp	_	_5	罪犯	罪犯	NN	NN	_	7	Mann	_	_6	做出	做出	VV	VV	_	7	Mann	_	_7	了	了	AS	AS	_	0	Root	_	_8	裁决	裁决	NN	NN	_	7	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_1	盖	盖	NN	NN	_	6	Exp	_	_4	要	要	VV	VV	_	6	Mann	_	_5	打	打	VV	VV	_	6	Mann	_	_6	地基	地基	NN	NN	_	0	Root	_	_7	。	。	PU	PU	_	6	mPunc	_	_5	电子	电子	NN	NN	_	9	Mann	_	_6	计算机	计算机	NN	NN	_	9	Mann	_	_7	正	正	AD	AD	_	9	Mann	_	_8	渐渐	渐渐	AD	AD	_	9	Mann	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_
+1	他	他	PN	PN	_	7	Exp	_	_5	罪犯	罪犯	NN	NN	_	7	Mann	_	_6	做出	做出	VV	VV	_	7	Mann	_	_7	了	了	AS	AS	_	0	Root	_	_8	裁决	裁决	NN	NN	_	7	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_1	盖	盖	NN	NN	_	6	Exp	_	_4	要	要	VV	VV	_	6	Mann	_	_5	打	打	VV	VV	_	6	Mann	_	_6	地基	地基	NN	NN	_	0	Root	_	_7	。	。	PU	PU	_	6	mPunc	_	_5	电子	电子	NN	NN	_	9	Mann	_	_6	计算机	计算机	NN	NN	_	9	Mann	_	_7	正	正	AD	AD	_	9	Mann	_	_8	渐渐	渐渐	AD	AD	_	9	Mann	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_
+
+
+
+
+
+
+
+
+4	个	个	M	M	_	0	Root	_	_5	罪犯	罪犯	NN	NN	_	0	Root	_	_6	做出	做出	VV	VV	_	0	Root	_	_7	了	了	AS	AS	_	0	Root	_	_8	裁决	裁决	NN	NN	_	0	Root	_	_9	。	。	PU	PU	_	8	mPunc	_	_5	电子	电子	NN	NN	_	0	Root	_	_6	计算机	计算机	NN	NN	_	0	Root	_	_7	正	正	AD	AD	_	0	Root	_	_8	渐渐	渐渐	AD	AD	_	0	Root	_	_9	接管	接管	VV	VV	_	0	Root	_	_10	世界	世界	NN	NN	_	0	Root	_	_11	。	。	PU	PU	_	10	mPunc	_	_4	要	要	VV	VV	_	0	Root	_	_5	打	打	VV	VV	_	0	Root	_	_6	地基	地基	NN	NN	_	0	Root	_	_7	。	。	PU	PU	_	6	mPunc	_	_
+7	。	。	PU	PU	_	2	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_
+
+
+
+
+
+10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_
+9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_
+8	渐渐	渐渐	AD	AD	_	1	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_
+6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_6	做出	做出	VV	VV	_	1	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_8	渐渐	渐渐	AD	AD	_	1	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_
+8	渐渐	渐渐	AD	AD	_	1	mPunc	_	_9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	6	mPunc	_	_
+9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	6	mPunc	_	_
+2	有	有	VE	VE	_	0	Root	_	_3	人	人	NN	NN	_	0	Root	_	_4	说	说	VV	VV	_	0	Root	_	_5	电子	电子	NN	NN	_	0	Root	_	_6	计算机	计算机	NN	NN	_	0	Root	_	_7	正	正	AD	AD	_	0	Root	_	_8	渐渐	渐渐	AD	AD	_	0	Root	_	_9	接管	接管	VV	VV	_	0	Root	_	_10	世界	世界	NN	NN	_	0	Root	_	_11	。	。	PU	PU	_	10	mPunc	_	_
+2	对	对	P	P	_	0	Root	_	_3	那	那	DT	DT	_	0	Root	_	_4	个	个	M	M	_	0	Root	_	_5	罪犯	罪犯	NN	NN	_	0	Root	_	_6	做出	做出	VV	VV	_	0	Root	_	_7	了	了	AS	AS	_	0	Root	_	_8	裁决	裁决	NN	NN	_	0	Root	_	_9	。	。	PU	PU	_	8	mPunc	_	_
+2	楼	楼	NN	NN	_	0	Root	_	_3	先	先	AD	AD	_	0	Root	_	_4	要	要	VV	VV	_	0	Root	_	_5	打	打	VV	VV	_	0	Root	_	_6	地基	地基	NN	NN	_	0	Root	_	_7	。	。	PU	PU	_	6	mPunc	_	_
+4	要	要	VV	VV	_	1	mPunc	_	_5	打	打	VV	VV	_	1	mPunc	_	_6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_
+4	个	个	M	M	_	1	mPunc	_	_5	罪犯	罪犯	NN	NN	_	1	mPunc	_	_6	做出	做出	VV	VV	_	1	mPunc	_	_7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_
+5	电子	电子	NN	NN	_	0	Root	_	_6	计算机	计算机	NN	NN	_	5	mPunc	_	_7	正	正	AD	AD	_	5	mPunc	_	_8	渐渐	渐渐	AD	AD	_	5	mPunc	_	_9	接管	接管	VV	VV	_	5	mPunc	_	_10	世界	世界	NN	NN	_	5	mPunc	_	_11	。	。	PU	PU	_	5	mPunc	_	_
+7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_
+7	。	。	PU	PU	_	1	mPunc	_	_
+9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_
+11	。	。	PU	PU	_	1	mPunc	_	_
+9	。	。	PU	PU	_	1	mPunc	_	_
+6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_
+9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_
+7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_
+7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_
+9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_
+6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_
+6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_
+9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	1	mPunc	_	_
+7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_
+7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	1	mPunc	_	_
+9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_
+6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_
+9	接管	接管	VV	VV	_	1	mPunc	_	_10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_
+6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	1	mPunc	_	_
+7	了	了	AS	AS	_	1	mPunc	_	_8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_
+8	裁决	裁决	NN	NN	_	1	mPunc	_	_9	。	。	PU	PU	_	8	mPunc	_	_
+10	世界	世界	NN	NN	_	1	mPunc	_	_11	。	。	PU	PU	_	10	mPunc	_	_
+6	地基	地基	NN	NN	_	1	mPunc	_	_7	。	。	PU	PU	_	6	mPunc	_	_
