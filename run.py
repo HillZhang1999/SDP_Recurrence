@@ -86,31 +86,28 @@ def build_dataset_reader() -> DatasetReader:
 def build_vocab(train_instances: AllennlpDataset,
                 dev_instances: AllennlpDataset,
                 test_instances: AllennlpDataset) -> Vocabulary:
-    instances = copy.deepcopy(train_instances)
-    for i in dev_instances:
-        instances.instances.append(Instance({'arc_tag': i.fields['arc_tag']}))
-    for i in test_instances:
-        instances.instances.append(Instance({'arc_tag': i.fields['arc_tag']}))
-    # vocab = Vocabulary.from_instances(instances, min_count={'tokens': 2, 'token_characters': 3})
-    vocab = Vocabulary.from_instances(instances)
+    instances = train_instances + dev_instances + test_instances
+    vocab = Vocabulary.from_instances(instances, pretrained_files={'tokens':config['pretrain_path'], 'token_characters':config['pretrain_char_path']},
+                                      )
     return vocab
 
 
 def build_model(vocab: Vocabulary) -> Model:
-    vocab_size = vocab.get_vocab_size("tokens")
-    char_vocab_size = vocab.get_vocab_size("token_characters")
     pos_vocab_size = vocab.get_vocab_size("pos_tag")
     text_field_embedder = BasicTextFieldEmbedder(
-        {"tokens": Embedding(embedding_dim=100, num_embeddings=vocab_size)})
+        {"tokens": Embedding(embedding_dim=100,
+                             pretrained_file=config['pretrain_path'],
+                             vocab=vocab)})
     char_field_embedder = BasicTextFieldEmbedder(
-        {"token_characters": TokenCharactersEncoder(Embedding(embedding_dim=100, num_embeddings=char_vocab_size),
+        {"token_characters": TokenCharactersEncoder(Embedding(embedding_dim=100,
+                                                              pretrained_file=config['pretrain_char_path'],
+                                                              vocab=vocab),
                                                     BagOfEmbeddingsEncoder(100, True), 0.33)})
     pos_field_embedder = BasicTextFieldEmbedder(
         {"pos_tag": Embedding(embedding_dim=50, num_embeddings=pos_vocab_size)})
 
     metric = MyMetric()
-    action_embedding = Embedding(vocab_namespace='actions', embedding_dim=50,
-                                 num_embeddings=vocab.get_vocab_size('actions'))
+    action_embedding = Embedding(vocab_namespace='actions', embedding_dim=50, num_embeddings=vocab.get_vocab_size('actions'))
 
     return TransitionParser(vocab=vocab,
                             text_field_embedder=text_field_embedder,

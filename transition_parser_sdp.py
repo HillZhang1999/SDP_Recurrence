@@ -8,17 +8,19 @@ from allennlp.modules import Seq2SeqEncoder, TextFieldEmbedder, Embedding
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from torch.nn.modules import Dropout
 from transition_sdp_predictor import sdp_trans_outputs_into_conll
-
+from config import config
 from transition_sdp_metric import MyMetric
 from stack_rnn import StackRnn
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
+
 
 @Model.register("transition_parser_sdp2018")
 class TransitionParser(Model):
     """
     解析器模型
     """
+
     def __init__(self,
                  vocab: Vocabulary,
                  text_field_embedder: TextFieldEmbedder,
@@ -277,7 +279,8 @@ class TransitionParser(Model):
 
         # 计算总的loss
         _loss = -torch.sum(
-            torch.stack([torch.sum(torch.stack(cur_loss)) for cur_loss in losses if len(cur_loss) > 0])) / sum([len(cur_loss) for cur_loss in losses])
+            torch.stack([torch.sum(torch.stack(cur_loss)) for cur_loss in losses if len(cur_loss) > 0])) / sum(
+            [len(cur_loss) for cur_loss in losses])
         ret = {
             'loss': _loss,
             'losses': losses,
@@ -308,11 +311,12 @@ class TransitionParser(Model):
         batch_size = len(metadata)
         tokens['tokens']['tokens'] = tokens['tokens']['tokens'][:, 1:]
         pos_tag["pos_tag"]["tokens"] = pos_tag["pos_tag"]["tokens"][:, 1:]
-        sent_len = [len(d['tokens'])-1 for d in metadata]
+        sent_len = [len(d['tokens']) - 1 for d in metadata]
         meta_info = [d['meta_info'] for d in metadata]
 
-        token_characters["token_characters"]["token_characters"] = token_characters["token_characters"]["token_characters"][:, 1:].squeeze(3)
-        
+        token_characters["token_characters"]["token_characters"] = token_characters["token_characters"][
+                                                                       "token_characters"][:, 1:].squeeze(3)
+
         oracle_actions = None
         token_characters = self.token_characters_encoder(token_characters)
         embedded_pos_tag = self.pos_tag_field_embedder(pos_tag)
@@ -366,24 +370,23 @@ class TransitionParser(Model):
         self.metric(edge_list, metadata, None)
 
         # CoNLL格式化的结果
-        predicted_conlls = []
+        # predicted_conlls = []
+        #
+        # for sent_idx in range(batch_size):
+        #     if len(output_dict['edge_list'][sent_idx]) <= 5 * len(output_dict['tokens'][sent_idx]):
+        #         predicted_conlls.append(sdp_trans_outputs_into_conll({
+        #             'tokens': output_dict['tokens'][sent_idx],
+        #             'edge_list': output_dict['edge_list'][sent_idx],
+        #             'pos_tag': output_dict['pos_tag'][sent_idx],
+        #         }))
 
-        for sent_idx in range(batch_size):
-            if len(output_dict['edge_list'][sent_idx]) <= 5 * len(output_dict['tokens'][sent_idx]):
-                predicted_conlls.append(sdp_trans_outputs_into_conll({
-                    'tokens': output_dict['tokens'][sent_idx],
-                    'edge_list': output_dict['edge_list'][sent_idx],
-                    'pos_tag': output_dict['pos_tag'][sent_idx],
-                }))
-
-        with open(self.filename, "a+", encoding="utf-8") as out:
-            for r in predicted_conlls:
-                if r:
-                    for line in r:
-                        out.write(line)
-                    out.write("\n")
-                    out.flush()
-
+        # with open(self.filename, "a+", encoding="utf-8") as out:
+        #     for r in predicted_conlls:
+        #         if r:
+        #             for line in r:
+        #                 out.write(line)
+        #             out.write("\n")
+        #             out.flush()
         return output_dict
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
@@ -411,5 +414,39 @@ class TransitionParser(Model):
                                 # 'UF_Recall': self.metric.UF_Recall
                                 })
             if reset:
+                if self.best_UF < self.metric.UF:
+                    print('(best)saving model...')
+                    self.best_UF = self.metric.UF
+                    self.save(config['model_path'])
+                self.epoch += 1
+                print(f'\nepoch: {self.epoch}')
+
                 self.metric.reset()
         return all_metrics
+
+    @classmethod
+    def load(cls, path, **kwargs):
+        """
+        载入模型
+        :param path:模型保存路径
+        :return: 模型对象
+        """
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
+        state = torch.load(path, map_location=device)
+        model = cls(**state['args'])
+        model.load_state_dict(state_dict=state['state_dict'], strict=False)
+        model.to(device)
+
+        return model
+
+    def save(self, path):
+        """
+        保存模型
+        :param path:模型保存路径
+        """
+        state_dict = self.state_dict()
+        state = {
+            'args': self.args,
+            'state_dict': state_dict
+        }
+        torch.save(state, path)
