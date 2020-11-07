@@ -87,12 +87,11 @@ def build_vocab(train_instances: AllennlpDataset,
                 dev_instances: AllennlpDataset,
                 test_instances: AllennlpDataset) -> Vocabulary:
     instances = train_instances + dev_instances + test_instances
-    vocab = Vocabulary.from_instances(instances, pretrained_files={'tokens':config['pretrain_path'], 'token_characters':config['pretrain_char_path']},
-                                      )
+    vocab = Vocabulary.from_instances(instances, pretrained_files={'tokens':config['pretrain_path'], 'token_characters':config['pretrain_char_path']},)
     return vocab
 
 
-def build_model(vocab: Vocabulary) -> Model:
+def build_model(vocab: Vocabulary, reader: DatasetReader) -> Model:
     pos_vocab_size = vocab.get_vocab_size("pos_tag")
     text_field_embedder = BasicTextFieldEmbedder(
         {"tokens": Embedding(embedding_dim=100,
@@ -110,6 +109,7 @@ def build_model(vocab: Vocabulary) -> Model:
     action_embedding = Embedding(vocab_namespace='actions', embedding_dim=50, num_embeddings=vocab.get_vocab_size('actions'))
 
     return TransitionParser(vocab=vocab,
+                            reader=reader,
                             text_field_embedder=text_field_embedder,
                             char_field_embedder=char_field_embedder,
                             pos_tag_field_embedder=pos_field_embedder,
@@ -123,8 +123,7 @@ def build_model(vocab: Vocabulary) -> Model:
                             same_dropout_mask_per_instance=True,
                             input_dropout=0.2,
                             action_embedding=action_embedding,
-                            filename="./results/result_{}.txt".format(
-                                time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))
+                            start_time=time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime())
                             )
 
 
@@ -135,7 +134,7 @@ def build_data_loaders(
 ) -> Tuple[allennlp.data.DataLoader, allennlp.data.DataLoader, allennlp.data.DataLoader]:
     train_loader = DataLoader(train_data, batch_size=30, shuffle=True, collate_fn=allennlp_collate)
     dev_loader = DataLoader(dev_data, batch_size=30, shuffle=True, collate_fn=allennlp_collate)
-    test_loader = DataLoader(dev_data, batch_size=30, shuffle=True, collate_fn=allennlp_collate)
+    test_loader = DataLoader(test_data, batch_size=30, shuffle=True, collate_fn=allennlp_collate)
     return train_loader, dev_loader, test_loader
 
 
@@ -144,7 +143,7 @@ def run_training_loop():
     train_set, dev_set, test_set = read_data(reader)
 
     vocab = build_vocab(train_set, dev_set, test_set)
-    model = build_model(vocab)
+    model = build_model(vocab, reader)
 
     train_set.index_with(vocab)
     dev_set.index_with(vocab)

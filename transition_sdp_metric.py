@@ -16,8 +16,9 @@ class MyMetric(Metric):
         self.correct_rels = 0.0
 
     def __repr__(self):
-        s = f"LF: {self.LF}, UF: {self.UF} "
-        # s += f"UAS: {self.uas:6.2%} LAS: {self.las:6.2%}"
+        s = f"LF_Precision: {self.LF_Precision}, LF_Recall: {self.LF_Recall}, LF: {self.LF}.\n" \
+            f"UF_Precision: {self.UF_Precision}, UF_Recall: {self.UF_Recall}, UF: {self.UF}.\n" \
+            f"n_predict: {self.n_predict}, n_total: {self.n_total}, correct_arcs: {self.correct_arcs}, correct_rels: {self.correct_rels}\n\n"
         return s
 
     @overrides

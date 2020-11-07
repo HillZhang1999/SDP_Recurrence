@@ -1,6 +1,5 @@
-import json
 from typing import List
-
+import json
 from allennlp.common.util import JsonDict, sanitize
 from allennlp.data import Instance
 from allennlp.predictors.predictor import Predictor
@@ -14,29 +13,50 @@ class SDPParserPredictor(Predictor):
     预测器模型
     """
 
-    def predict(self, sentence: str) -> JsonDict:
+    def predict(self, sentences: List[str]) -> JsonDict:
         """
         根据CoNLL格式的句子数据，去预测该句子的语义依存图（SDG）。
         只需要预先完成分词处理即可，词性、语义关系都可以mask掉。
-        :param sentence: CoNLL格式的句子数据。
+        :param sentences: CoNLL格式的句子数据。
         :return: 返回标注了语义依存关系的CoNLL格式句子数据。
         """
-        return self.predict_json({"sentence": sentence})
+        return self.predict_batch_json([{"sentence": sentence} for sentence in sentences])
+
+    @overrides
+    def _batch_json_to_instances(self, json_dicts: List[JsonDict]) -> List[Instance]:
+        """
+        将Json化后的一个batch的句子数据转成实例，以便预测。
+        :param json_dicts:``[{"sentence": "..."},{"sentence": "..."}...]``.
+        :return:一个实例，包含了tokens和meta_info两个域
+        """
+        instances = []
+        for json_dict in json_dicts:
+            instances.append(self._json_to_instance(json_dict))
+        return instances
 
     @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """
-        将Json化后的句子数据转成实例，以便预测。
+        将Json化后的单个句子数据转成实例，以便预测。
         :param json_dict:``{"sentence": "..."}``.
         :return:一个实例，包含了tokens和meta_info两个域
         """
-        # ret = parse_sentence(json.dumps(json_dict))
         ret = parse_sentence(json_dict["sentence"])
 
         tokens = ret["tokens"]
         meta_info = ret["meta_info"]
+        pos_tag = ret["pos_tag"]
+        token_characters = ret["token_characters"]
+        arc_indices = ret["arc_indices"]
+        arc_tag = ret["arc_tag"]
 
-        return self._dataset_reader.text_to_instance(tokens=tokens, meta_info=[meta_info])
+        return self._dataset_reader.text_to_instance(tokens=tokens,
+                                                     meta_info=meta_info,
+                                                     pos_tag=pos_tag,
+                                                     token_characters=token_characters,
+                                                     arc_indices=arc_indices,
+                                                     arc_tag=arc_tag
+                                                     )
 
     @overrides
     def predict_instance(self, instance: Instance) -> JsonDict:
@@ -52,7 +72,7 @@ class SDPParserPredictor(Predictor):
         return sanitize(ret_dict)
 
     @overrides
-    def predict_batch_instance(self, instances: List[Instance]) -> List[JsonDict]:
+    def predict_batch_instance(self, instances: List[Instance]) -> List[List[str]]:
         """
         对实例化的批量数据进行预测
         :param instances:实例化后的批量CoNLL格式数据

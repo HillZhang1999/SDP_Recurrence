@@ -2,7 +2,7 @@ import logging
 from typing import Dict, Optional, Any, List
 
 import torch
-from allennlp.data import Vocabulary
+from allennlp.data import Vocabulary, DatasetReader
 from allennlp.models.model import Model
 from allennlp.modules import Seq2SeqEncoder, TextFieldEmbedder, Embedding
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
@@ -11,6 +11,7 @@ from transition_sdp_predictor import sdp_trans_outputs_into_conll
 from config import config
 from transition_sdp_metric import MyMetric
 from stack_rnn import StackRnn
+from supar.utils import Config
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
@@ -23,6 +24,7 @@ class TransitionParser(Model):
 
     def __init__(self,
                  vocab: Vocabulary,
+                 reader: DatasetReader,
                  text_field_embedder: TextFieldEmbedder,
                  char_field_embedder: TextFieldEmbedder,
                  pos_tag_field_embedder: TextFieldEmbedder,
@@ -38,7 +40,7 @@ class TransitionParser(Model):
                  action_embedding: Embedding = None,
                  initializer: InitializerApplicator = InitializerApplicator(),
                  regularizer: Optional[RegularizerApplicator] = None,
-                 filename: str = None,
+                 start_time: str = None,
                  ) -> None:
         """
         模型构造类
@@ -58,19 +60,24 @@ class TransitionParser(Model):
         :param action_embedding:动作序列嵌入器（封装了Pytorch的embedding类）
         :param initializer:参数初始化器
         :param regularizer:正则化器
-        :param filename:预测结果输出文件名
+        :param start_time:训练开始时间
         """
         super(TransitionParser, self).__init__(vocab, regularizer)
 
         self.epoch = 1
         self.best_UF = 0
         self.vocab = vocab
+        self.reader = reader
+
         self.num_actions = vocab.get_vocab_size('actions')
         self.text_field_embedder = text_field_embedder
         self.token_characters_encoder = char_field_embedder
         self.pos_tag_field_embedder = pos_tag_field_embedder
         self.metric = metric
-        self.filename = filename
+        self.start_time = start_time
+        self.predicted_conlls = []
+
+        self.args = Config().update(locals())
 
         # 动作序列嵌入器（封装了Pytorch的embedding类）
         self.action_embedding = action_embedding
@@ -369,24 +376,15 @@ class TransitionParser(Model):
         # 评价模型
         self.metric(edge_list, metadata, None)
 
-        # CoNLL格式化的结果
-        # predicted_conlls = []
-        #
-        # for sent_idx in range(batch_size):
-        #     if len(output_dict['edge_list'][sent_idx]) <= 5 * len(output_dict['tokens'][sent_idx]):
-        #         predicted_conlls.append(sdp_trans_outputs_into_conll({
-        #             'tokens': output_dict['tokens'][sent_idx],
-        #             'edge_list': output_dict['edge_list'][sent_idx],
-        #             'pos_tag': output_dict['pos_tag'][sent_idx],
-        #         }))
+        # 保存CoNLL格式化的结果
+        for sent_idx in range(batch_size):
+            if len(output_dict['edge_list'][sent_idx]) <= 5 * len(output_dict['tokens'][sent_idx]):
+                self.predicted_conlls.append(sdp_trans_outputs_into_conll({
+                    'tokens': output_dict['tokens'][sent_idx],
+                    'edge_list': output_dict['edge_list'][sent_idx],
+                    'pos_tag': output_dict['pos_tag'][sent_idx],
+                }))
 
-        # with open(self.filename, "a+", encoding="utf-8") as out:
-        #     for r in predicted_conlls:
-        #         if r:
-        #             for line in r:
-        #                 out.write(line)
-        #             out.write("\n")
-        #             out.flush()
         return output_dict
 
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
@@ -417,12 +415,25 @@ class TransitionParser(Model):
                 if self.best_UF < self.metric.UF:
                     print('(best)saving model...')
                     self.best_UF = self.metric.UF
-                    self.save(config['model_path'])
+                    self.save(config['model_path'].format(self.start_time))
                 self.epoch += 1
                 print(f'\nepoch: {self.epoch}')
-
+                self.output_dev_results()
                 self.metric.reset()
         return all_metrics
+
+    def output_dev_results(self):
+        """
+        输出开发集的预测结果
+        """
+        with open(config['dev_output_path'].format(self.start_time), "w", encoding="utf-8") as out:
+            for r in self.predicted_conlls:
+                if r:
+                    for line in r:
+                        out.write(line)
+                    out.write("\n")
+                    out.flush()
+        self.predicted_conlls = []
 
     @classmethod
     def load(cls, path, **kwargs):

@@ -19,5 +19,7 @@ config = {
     'min_freq' : 3,
     'batch_first' : True,
     'out_file_path' : 'Program/SDP/output.txt',
-    'model_path' : './models/model.pt',
+    'model_path' : './models/model_{}.pt',
+    'dev_output_path' : "./results/dev/best_dev_results_{}.txt",
+    'test_output_path': "./results/test/test_results_{}.txt",
 }
